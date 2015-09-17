@@ -102,4 +102,7 @@ public class GildedRose {
         }
     }
 
+    public static List<Item> getItems() {
+        return items;
+    }
 }
