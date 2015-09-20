@@ -105,4 +105,14 @@ public class GildedRose {
     public static List<Item> getItems() {
         return items;
     }
+
+    @Override
+    public String toString() {
+        String result = "";
+        for(Item item : items){
+            result += "Name: "+item.getName()+" || Quality: "+item.getQuality()+" || Should be sold in: "+item.getSellIn()+" days";
+            result += "\n";
+        }
+        return result;
+    }
 }
