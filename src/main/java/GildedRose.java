@@ -4,15 +4,25 @@ import java.util.List;
 
 public class GildedRose {
 
-	private static List<Item> items = null;
+    public static final int MINIMUM_QUALITY = 0;
+    public static final int DOUBLE_INCREMENT_THRESHOLD = 10;
+    public static final int TRIPLE_INCREMENT_THRESHOLD = 5;
+    public static final int MAXIMUM_QUALITY = 50;
+    public static final int QUALITY_STEP = 1;
+    public static final int MINIMUM_SELLIN = 0;
+    public static final int SELLIN_STEP = 1;
+    public static final String AGED_BRIE = "Aged Brie";
+    public static final String BACKSTAGE_PASSES = "Backstage passes to a TAFKAL80ETC concert";
+    public static final String SULFURAS = "Sulfuras, Hand of Ragnaros";
+    private static List<Item> items = null;
 
     public GildedRose() {
         items = new ArrayList<Item>();
         items.add(new Item("+5 Dexterity Vest", 10, 20));
-        items.add(new Item("Aged Brie", 2, 0));
+        items.add(new Item(AGED_BRIE, 2, 0));
         items.add(new Item("Elixir of the Mongoose", 5, 7));
-        items.add(new Item("Sulfuras, Hand of Ragnaros", 0, 80));
-        items.add(new Item("Backstage passes to a TAFKAL80ETC concert", 15, 20));
+        items.add(new Item(SULFURAS, 0, 80));
+        items.add(new Item(BACKSTAGE_PASSES, 15, 20));
         items.add(new Item("Conjured Mana Cake", 3, 6));
     }
 
@@ -25,10 +35,10 @@ public class GildedRose {
 		
         items = new ArrayList<Item>();
         items.add(new Item("+5 Dexterity Vest", 10, 20));
-        items.add(new Item("Aged Brie", 2, 0));
+        items.add(new Item(AGED_BRIE, 2, 0));
         items.add(new Item("Elixir of the Mongoose", 5, 7));
-        items.add(new Item("Sulfuras, Hand of Ragnaros", 0, 80));
-        items.add(new Item("Backstage passes to a TAFKAL80ETC concert", 15, 20));
+        items.add(new Item(SULFURAS, 0, 80));
+        items.add(new Item(BACKSTAGE_PASSES, 15, 20));
         items.add(new Item("Conjured Mana Cake", 3, 6));
 
         updateQuality();
@@ -40,90 +50,125 @@ public class GildedRose {
     {
         for (int i = 0; i < items.size(); i++)
         {
-            if ((!"Aged Brie".equals(items.get(i).getName())) && !"Backstage passes to a TAFKAL80ETC concert".equals(items.get(i).getName())) 
+            Item currentItem = items.get(i);
+            String currentItemName = currentItem.getName();
+
+            boolean nameIsNotAgedBrie = !AGED_BRIE.equals(currentItemName);
+            boolean nameIsBackStagePasses = BACKSTAGE_PASSES.equals(currentItemName);
+            boolean nameIsNotBackstagePasses = !nameIsBackStagePasses;
+            boolean nameIsNotSulfuras = !SULFURAS.equals(currentItemName);
+            boolean norAgedBrieNeitherBackstagePasses = nameIsNotAgedBrie && nameIsNotBackstagePasses;
+
+            if (norAgedBrieNeitherBackstagePasses)
             {
-                if (items.get(i).getQuality() > 0)
+                if (hasSomeQuality(currentItem))
                 {
-                    if (!"Sulfuras, Hand of Ragnaros".equals(items.get(i).getName()))
+                    if (nameIsNotSulfuras)
                     {
-                        items.get(i).setQuality(items.get(i).getQuality() - 1);
+                        decreaseQuality(currentItem);
                     }
                 }
             }
             else
             {
-                if (items.get(i).getQuality() < 50)
+                if (isMaximumQualityNotReached(currentItem))
                 {
-                    items.get(i).setQuality(items.get(i).getQuality() + 1);
+                    increaseQuality(currentItem);
 
-                    if ("Backstage passes to a TAFKAL80ETC concert".equals(items.get(i).getName()))
+                    if (nameIsBackStagePasses)
                     {
-                        if (items.get(i).getSellIn() < 11)
+                        if (isInDoubleIncrement(currentItem))
                         {
-                            if (items.get(i).getQuality() < 50)
+                            if (isMaximumQualityNotReached(currentItem))
                             {
-                                items.get(i).setQuality(items.get(i).getQuality() + 1);
+                                increaseQuality(currentItem);
                             }
                         }
 
-                        if (items.get(i).getSellIn() < 6)
+                        if (isInTripleIncrement(currentItem))
                         {
-                            if (items.get(i).getQuality() < 50)
+                            if (currentItem.getQuality() < 50)
                             {
-                                items.get(i).setQuality(items.get(i).getQuality() + 1);
+                                increaseQuality(currentItem);
                             }
                         }
                     }
                 }
             }
 
-            if (!"Sulfuras, Hand of Ragnaros".equals(items.get(i).getName()))
+            if (nameIsNotSulfuras)
             {
-                items.get(i).setSellIn(items.get(i).getSellIn() - 1);
+                decreaseSellIn(currentItem);
             }
 
-            if (items.get(i).getSellIn() < 0)
+            if (itemIsExpired(currentItem))
             {
-                if (!"Aged Brie".equals(items.get(i).getName()))
+                if (nameIsNotAgedBrie)
                 {
-                    if (!"Backstage passes to a TAFKAL80ETC concert".equals(items.get(i).getName()))
+                    if (nameIsNotBackstagePasses)
                     {
-                        if (items.get(i).getQuality() > 0)
+                        if (hasSomeQuality(currentItem))
                         {
-                            if (!"Sulfuras, Hand of Ragnaros".equals(items.get(i).getName()))
+                            if (nameIsNotSulfuras)
                             {
-                                items.get(i).setQuality(items.get(i).getQuality() - 1);
+                                decreaseQuality(currentItem);
                             }
                         }
                     }
                     else
                     {
-                        items.get(i).setQuality(items.get(i).getQuality() - items.get(i).getQuality());
+                        resetQuality(currentItem);
                     }
                 }
                 else
                 {
-                    if (items.get(i).getQuality() < 50)
+                    if (isMaximumQualityNotReached(currentItem))
                     {
-                        items.get(i).setQuality(items.get(i).getQuality() + 1);
+                        increaseQuality(currentItem);
                     }
                 }
             }
         }
     }
 
-    public static List<Item> getItems() {
-        return items;
+    private static boolean isInTripleIncrement(Item currentItem) {
+        return currentItem.getSellIn() <= TRIPLE_INCREMENT_THRESHOLD;
     }
 
-    @Override
-    public String toString() {
-        String result = "";
-        for(Item item : items){
-            result += "Name: "+item.getName()+" || Quality: "+item.getQuality()+" || Should be sold in: "+item.getSellIn()+" days";
-            result += "\n";
-        }
-        return result;
+    private static boolean isInDoubleIncrement(Item currentItem) {
+        return currentItem.getSellIn() <= DOUBLE_INCREMENT_THRESHOLD;
+    }
+
+    private static boolean isMaximumQualityNotReached(Item currentItem) {
+        return currentItem.getQuality() < MAXIMUM_QUALITY;
+    }
+
+    private static boolean hasSomeQuality(Item currentItem) {
+        return currentItem.getQuality() > MINIMUM_QUALITY;
+    }
+
+    private static void resetQuality(Item currentItem) {
+        currentItem.setQuality(MINIMUM_QUALITY);
+    }
+
+    private static boolean itemIsExpired(Item currentItem) {
+        return currentItem.getSellIn() < MINIMUM_SELLIN;
+    }
+
+    private static void decreaseSellIn(Item currentItem) {
+        currentItem.setSellIn(currentItem.getSellIn() - SELLIN_STEP);
+    }
+
+    private static void increaseQuality(Item currentItem) {
+        currentItem.setQuality(currentItem.getQuality() + QUALITY_STEP);
+    }
+
+    private static void decreaseQuality(Item currentItem) {
+        currentItem.setQuality(currentItem.getQuality() - QUALITY_STEP);
+    }
+
+    public static List<Item> getItems() {
+        return items;
     }
 
     public Item getItemByName(String name){
