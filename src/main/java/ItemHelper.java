@@ -10,6 +10,7 @@ public class ItemHelper {
     private static final int QUALITY_STEP = 1;
     private static final int MINIMUM_SELLIN = 0;
     private static final int SELLIN_STEP = 1;
+    private static final String CONJURED = "conjured";
 
     static void treatIncrementForBackstagePass(Item currentItem) {
         if (isInDoubleIncrement(currentItem))
@@ -58,6 +59,12 @@ public class ItemHelper {
 
     public static void decreaseQuality(Item currentItem) {
         if (hasNotQuality(currentItem)) return;
+        if (isConjured(currentItem)) currentItem.setQuality(currentItem.getQuality() - QUALITY_STEP);
         currentItem.setQuality(currentItem.getQuality() - QUALITY_STEP);
+    }
+
+    public static boolean isConjured(Item currentItem) {
+        String itemNameLowerCase = currentItem.getName().toLowerCase();
+        return itemNameLowerCase.contains(CONJURED);
     }
 }

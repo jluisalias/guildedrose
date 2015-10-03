@@ -158,10 +158,13 @@ public class GildedRoseTest {
     @Test
     public void testConjuredManaCake() {
         Item conjuredManaCake = gildedRoseSUT.getItemByName("Conjured Mana Cake");
-        assertEquals(5, conjuredManaCake.getQuality());
+        assertEquals(4, conjuredManaCake.getQuality());
         assertEquals(2, conjuredManaCake.getSellIn());
         gildedRoseSUT.updateQuality();
-        assertNotEquals(3, conjuredManaCake.getQuality()); //While the new funcionality is not done
+        assertEquals(2, conjuredManaCake.getQuality()); //While the new funcionality is not done
         assertEquals(1, conjuredManaCake.getSellIn());
+        gildedRoseSUT.updateQuality();
+        assertEquals(0, conjuredManaCake.getQuality()); //While the new funcionality is not done
+        assertEquals(0, conjuredManaCake.getSellIn());
     }
 }

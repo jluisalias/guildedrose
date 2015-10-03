@@ -7,17 +7,20 @@ public class GildedRose {
     private static final String AGED_BRIE = "Aged Brie";
     private static final String BACKSTAGE_PASSES = "Backstage passes to a TAFKAL80ETC concert";
     private static final String SULFURAS = "Sulfuras, Hand of Ragnaros";
+    public static final String DEXTERITY_VEST = "+5 Dexterity Vest";
+    public static final String ELIXIR_OF_THE_MONGOOSE = "Elixir of the Mongoose";
+    public static final String CONJURED_MANA_CAKE = "Conjured Mana Cake";
     private static List<Item> items = null;
 
 
     public GildedRose() {
         items = new ArrayList<Item>();
-        items.add(new Item("+5 Dexterity Vest", 10, 20));
+        items.add(new Item(DEXTERITY_VEST, 10, 20));
         items.add(new Item(AGED_BRIE, 2, 0));
-        items.add(new Item("Elixir of the Mongoose", 5, 7));
+        items.add(new Item(ELIXIR_OF_THE_MONGOOSE, 5, 7));
         items.add(new Item(SULFURAS, 0, 80));
         items.add(new Item(BACKSTAGE_PASSES, 15, 20));
-        items.add(new Item("Conjured Mana Cake", 3, 6));
+        items.add(new Item(CONJURED_MANA_CAKE, 3, 6));
     }
 
     public static void updateQuality()
